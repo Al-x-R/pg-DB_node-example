@@ -9,7 +9,10 @@ CREATE TABLE IF NOT EXISTS users
     "id"        serial PRIMARY KEY,
     "firstName" varchar(50)  NOT NULL,
     "lastName"  varchar(50)  NOT NULL,
-    "email"     varchar(250) NOT NULL UNIQUE
+    "email"     varchar(250) NOT NULL UNIQUE,
+    "isMale"    boolean,
+    "createdAt" timestamp DEFAULT current_timestamp,
+    "birthday"  date         NOT NULL CHECK ( "birthday" < current_date )
 );
 
 SELECT *
@@ -22,6 +25,33 @@ WHERE users."firstName" = 'Alice';
 SELECT *
 FROM users
 WHERE users."id" BETWEEN 10 AND 20;
+
+SELECT *
+FROM users
+WHERE "isMale" = false;
+
+SELECT *
+FROM users
+WHERE "isMale" = true
+  AND age("birthday") > make_interval('17');
+
+SELECT *
+FROM users
+WHERE age("birthday") > make_interval('40')
+  AND age("birthday") < make_interval('100');
+
+SELECT *
+FROM users
+WHERE extract('month' FROM "birthday") = 7;
+
+SELECT *
+FROM users
+WHERE "isMale" = true
+  AND extract('day' FROM "birthday") = 17
+  AND extract('month' FROM "birthday") = 11;
+
+SELECT extract('day' FROM current_date);
+
 
 --CREATE
 INSERT INTO users ("firstName", "lastName", "email")
