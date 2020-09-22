@@ -1,0 +1,8 @@
+{
+  "baseURL": "https://randomuser.me/api/",
+  "defaultParams": {
+    "inc": "name,email",
+    "results": 100,
+    "seed": "fd2020"
+  }
+}
