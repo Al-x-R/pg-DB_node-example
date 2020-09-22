@@ -60,6 +60,9 @@ SELECT * FROM users LIMIT 23 OFFSET 92;
 
 SELECT * FROM users WHERE "isMale" = false LIMIT 20 OFFSET 40;
 
+SELECT "firstName" AS "Name", "lastName" AS "Surname",extract('year' FROM age("birthday") ) AS "age"
+FROM users;
+
 
 --CREATE
 INSERT INTO users ("firstName", "lastName", "email")
