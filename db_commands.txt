@@ -68,6 +68,10 @@ FROM users;
 SELECT "firstName" || ' ' || "lastName" AS "full name" FROM users;
 SELECT concat("firstName", ' ', "lastName") AS "full name" FROM users;
 
+-- length
+SELECT concat("firstName", ' ', "lastName") AS "full name"
+FROM users WHERE char_length(concat("firstName", ' ', "lastName")) > 15;
+
 --CREATE
 INSERT INTO users ("firstName", "lastName", "email")
 VALUES ('firstName', 'lastName', 'email1@gmail.com'),
