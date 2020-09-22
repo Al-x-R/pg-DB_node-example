@@ -1,0 +1,43 @@
+CREATE EXTENSION "uuid-ossp";
+-- clear tale
+TRUNCATE TABLE users;
+-- delete table
+DROP TABLE users;
+
+CREATE TABLE IF NOT EXISTS users
+(
+    "id"        serial PRIMARY KEY,
+    "firstName" varchar(50)  NOT NULL,
+    "lastName"  varchar(50)  NOT NULL,
+    "email"     varchar(250) NOT NULL UNIQUE
+);
+
+SELECT *
+FROM users;
+
+SELECT *
+FROM users
+WHERE users."firstName" = 'Alice';
+
+SELECT *
+FROM users
+WHERE users."id" BETWEEN 10 AND 20;
+
+--CREATE
+INSERT INTO users ("firstName", "lastName", "email")
+VALUES ('firstName', 'lastName', 'email1@gmail.com'),
+       ('firstName', 'lastName', 'email2@gmail.com'),
+       ('firstName', 'lastName', 'email3@gmail.com')
+RETURNING *;
+
+--UPDATE
+UPDATE users
+SET "firstName" = 'Zohan'
+WHERE users."id" = 13
+RETURNING *;
+
+--DELETE
+DELETE
+FROM users
+WHERE "id" BETWEEN 101 AND 103
+RETURNING *;
