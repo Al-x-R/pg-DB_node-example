@@ -1,0 +1,7 @@
+SELECT brand, sum(quantity) AS "brands phones quantiry"
+FROM phones WHERE brand = 'Iphone'
+GROUP BY brand ;
+
+SELECT brand, avg(price) AS "avarage brand phones price"
+FROM phones
+GROUP BY brand ;
