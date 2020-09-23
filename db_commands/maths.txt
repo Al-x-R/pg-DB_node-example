@@ -1,0 +1,18 @@
+-- sum
+SELECT sum("quantity")
+FROM phones;
+
+-- filter
+SELECT sum("quantity")
+FROM phones WHERE "price" >= 12000;
+
+
+SELECT avg("price") FROM phones;
+
+-- count unique values
+SELECT DISTINCT "brand" FROM phones;
+
+-- max and min
+SELECT ("price" * "quantity") AS "total cost" FROM phones;
+SELECT min("price" * "quantity") AS "min cost" FROM phones;
+SELECT max("price" * "quantity") AS "min cost" FROM phones;
