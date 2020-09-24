@@ -1,0 +1,20 @@
+SELECT "firstName", u.id as "user_id", o.id as "order_id", o."createdAt"
+FROM users u
+         INNER JOIN orders o on u.id = o."userId";
+
+
+SELECT *
+FROM orders as o
+         JOIN phones_to_orders po on o.id = po."orderId"
+         JOIN phones p on p.id = po."phoneId"
+WHERE o.id = 10;
+
+SELECT u.id, o.id, sum(po.quantity * p.price) as "total order cost"
+FROM users u
+JOIN orders o on u.id = o."userId"
+JOIN phones_to_orders po on po."orderId" = o.id
+JOIN phones p on p.id = po."phoneId"
+GROUP BY u.id, o.id
+HAVING sum(po.quantity * p.price) > 100000
+-- ORDER BY u.id, o.id DESC
+-- LIMIT 10
