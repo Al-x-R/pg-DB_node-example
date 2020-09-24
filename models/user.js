@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
 class User {
   static _client = null;
@@ -11,22 +11,30 @@ class User {
     return rows;
   }
 
+  /**
+   *
+   * @param {object[]} values
+   * @returns {Promise<object[]>}
+   */
   static async bulkCreate(values) {
     const valuesString = values
       .map(
-        ({ name: { first, last }, email, gender }) =>
-          `('${first}','${last}','${email}', '${
-            gender === 'male'
-          }', '${`${_.random(1950, 2010)}/${_.random(1, 12)}/${_.random(
+        ({ name: { first, last }, email, gender }, index) =>
+          `('${first}','${last}','${
+            email || `test.email${first}${index}@gmail.com`
+          }', '${gender === 'male'}', '${`${_.random(1950, 2010)}/${_.random(
             1,
-            28
-          )}`}')`
+            12
+          )}/${_.random(1, 28)}`}')`
       )
       .join(',');
-    await this._client.query(
+
+    const { rows } = await this._client.query(
       `INSERT INTO ${this.tableName} ("firstName", "lastName", "email", "isMale", "birthday")\n
-      VALUES ${valuesString};`
+      VALUES ${valuesString}\n
+      RETURNING *;`
     );
+    return rows;
   }
 }
 
