@@ -5,3 +5,8 @@ GROUP BY brand ;
 SELECT brand, avg(price) AS "avarage brand phones price"
 FROM phones
 GROUP BY brand ;
+
+SELECT brand, sum(quantity) as "total brand quantity"
+FROM phones
+GROUP BY brand
+HAVING sum(quantity) > 50000;

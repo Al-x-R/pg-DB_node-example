@@ -1,0 +1,9 @@
+SELECT brand || ' ' || model as name, price
+FROM phones
+ORDER BY price DESC;
+
+SELECT concat("firstName", ' ', "lastName") as "full name",
+       email,
+       EXTRACT('year' FROM age("birthday")) as "age"
+FROM users
+ORDER BY EXTRACT('year' FROM age("birthday")) ASC, email DESC ;
