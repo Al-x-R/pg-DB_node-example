@@ -18,3 +18,123 @@ GROUP BY u.id, o.id
 HAVING sum(po.quantity * p.price) > 100000
 -- ORDER BY u.id, o.id DESC
 -- LIMIT 10
+
+SELECT "orderId",
+       u."lastName" || ' ' || u."firstName",
+       p.brand,
+       p.model,
+       p.quantity,
+       p.price,
+       pto.quantity * p.price "total"
+FROM orders o
+         JOIN phones_to_orders pto on o.id = pto."orderId"
+         JOIN phones p on p.id = pto."phoneId"
+         JOIN users u on u.id = o."userId"
+WHERE "orderId" = 97;
+
+SELECT (SELECT avg(EXTRACT('year' FROM age("birthday"))) FROM users);
+------------------------
+
+SELECT avg("orders with total cost"."order cost")
+FROM (
+         SELECT sum(pto.quantity * p.price) "order cost"
+         FROM orders o
+                  JOIN phones_to_orders pto on o.id = pto."orderId"
+                  JOIN phones p on p.id = pto."phoneId"
+         GROUP BY o.id) as "orders with total cost";
+
+------------------------
+
+SELECT sum(pto.quantity * p.price) "order cost"
+FROM orders o
+         JOIN phones_to_orders pto on o.id = pto."orderId"
+         JOIN phones p on p.id = pto."phoneId"
+GROUP BY o.id;
+
+
+SELECT avg("orders with total cost"."order cost")
+FROM (SELECT sum(pto.quantity * p.price) "order cost"
+      FROM orders o
+               JOIN phones_to_orders pto on o.id = pto."orderId"
+               JOIN phones p on p.id = pto."phoneId"
+      GROUP BY o.id) as "orders with total cost";
+
+-----------------------
+
+SELECT sum(pto.quantity * p.price) "order cost"
+FROM orders o
+         JOIN phones_to_orders pto on o.id = pto."orderId"
+         JOIN phones p on p.id = pto."phoneId"
+GROUP BY o.id
+HAVING sum(pto.quantity * p.price) >
+       (SELECT avg("orders with total cost"."order cost")
+        FROM (SELECT sum(pto.quantity * p.price) "order cost"
+              FROM orders o
+                       JOIN phones_to_orders pto on o.id = pto."orderId"
+                       JOIN phones p on p.id = pto."phoneId"
+              GROUP BY o.id) as "orders with total cost");
+              ||
+              ||
+              ||
+              \/
+
+WITH orders_with_total_cost as
+         (SELECT o.id, sum(pto.quantity * p.price) "order cost"
+          FROM orders o
+                   JOIN phones_to_orders pto on o.id = pto."orderId"
+                   JOIN phones p on p.id = pto."phoneId"
+          GROUP BY o.id)
+SELECT orders_with_total_cost.id, orders_with_total_cost."order cost"
+FROM orders_with_total_cost
+WHERE orders_with_total_cost."order cost" >
+      (SELECT avg(orders_with_total_cost."order cost" )
+      FROM orders_with_total_cost)
+ORDER BY orders_with_total_cost."order cost" DESC;
+
+----------------------
+
+SELECT o.id, sum(p.price * pto.quantity), count(*)
+FROM orders o
+         JOIN phones_to_orders pto on o.id = pto."orderId"
+         JOIN phones p on p.id = pto."phoneId"
+GROUP BY o.id
+HAVING count(*) > 10
+ORDER BY o.id;
+
+
+SELECT u."lastName", count(*)
+FROM users u
+         JOIN orders o on u.id = o."userId"
+GROUP BY u."lastName";
+
+SELECT count(*)
+FROM orders
+WHERE "userId" = 15;
+
+
+
+SELECT u.id,
+       u."lastName",
+       (SELECT count(*)
+        FROM orders
+        WHERE "userId" = u.id)
+FROM users u;
+
+--- popular model
+SELECT brand, model, sum(pto.quantity) "sold" FROM phones p
+JOIN phones_to_orders pto on p.id = pto."phoneId"
+GROUP BY brand, model
+ORDER BY "sold" DESC
+LIMIT 1;
+
+-- popular model for
+SELECT brand, model, sum(pto.quantity) "sold"
+FROM phones p
+         JOIN phones_to_orders pto on p.id = pto."phoneId"
+         JOIN orders o on o.id = pto."orderId"
+         JOIN users u on o."userId" = u.id
+    and not u."isMale"
+    and extract('year' FROM age(u.birthday)) < 18
+GROUP BY brand, model
+ORDER BY "sold" DESC
+LIMIT 1;
