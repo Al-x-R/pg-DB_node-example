@@ -68,3 +68,14 @@ ORDER BY "sold"
     );
 
 SELECT * FROM phones_sold_count;
+
+
+SELECT o.id,
+       p.brand || ' ' || p.model                         "phone",
+       p.price,
+       pto.quantity,
+       sum(pto.quantity * p.id) OVER (PARTITION BY o.id) "order cost"
+FROM orders o
+         JOIN phones_to_orders pto on o.id = pto."orderId"
+         JOIN phones p on p.id = pto."phoneId"
+GROUP BY o.id, p.id, pto.quantity
